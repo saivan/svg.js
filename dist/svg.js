@@ -6,7 +6,7 @@
 * @copyright Wout Fierens <wout@mick-wout.com>
 * @license MIT
 *
-* BUILT: Fri Jul 21 2017 14:50:37 GMT+0200 (Mitteleuropäische Sommerzeit)
+* BUILT: Sun Feb 25 2018 01:42:14 GMT+1100 (AEDT)
 */;
 (function(root, factory) {
   /* istanbul ignore next */
@@ -2540,7 +2540,11 @@ SVG.Matrix = SVG.invent({
     }
     // Convert matrix to string
   , toString: function() {
-      return 'matrix(' + this.a + ',' + this.b + ',' + this.c + ',' + this.d + ',' + this.e + ',' + this.f + ')'
+
+      // Construct the matrix directly
+      return 'matrix(' + float32(this.a) + ',' + float32(this.b) + ','
+        + float32(this.c) + ',' + float32(this.d) + ',' + float32(this.e)
+        + ',' + float32(this.f) + ')'
     }
   }
 
@@ -5502,8 +5506,15 @@ function idFromReference(url) {
   if (m) return m[1]
 }
 
+// If values like 1e-88 are passed, this is not a valid 32 bit float,
+// but in those cases, we are so close to 0 that 0 works well!
+function float32(v) {
+  return Math.abs(v) > 1e-37 ? v : 0
+}
+
 // Create matrix array for looping
 var abcdef = 'abcdef'.split('')
+
 // Add CustomEvent to IE9 and IE10
 if (typeof window.CustomEvent !== 'function') {
   // Code from: https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent
